@@ -4,7 +4,8 @@
 
 The following plots show the time taken for training (fit) and prediction (predict) as the number of samples (N) and features (M) are varied.
 
-![Runtime Analysis](q4_runtime_analysis.png)
+![Runtime Analysis]
+<img width="1200" height="810" alt="q4_runtime_analysis" src="https://github.com/user-attachments/assets/2a28d797-ca14-4d25-8aca-3b3b2dcff59a" />
 
 ---
 
