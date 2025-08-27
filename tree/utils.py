@@ -15,6 +15,7 @@ def entropy(y: pd.Series) -> float:
         return 0
     counts = y.value_counts()
     probabilities = counts / y.size
+    probabilities = probabilities[probabilities > 0]  
     return -np.sum(probabilities * np.log2(probabilities))
 
 def gini_index(y: pd.Series) -> float:
