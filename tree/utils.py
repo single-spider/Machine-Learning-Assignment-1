@@ -15,7 +15,7 @@ def entropy(y: pd.Series) -> float:
         return 0
     counts = y.value_counts()
     probabilities = counts / y.size
-    probabilities = probabilities[probabilities > 0]  
+    probabilities = probabilities[probabilities > 0]
     return -np.sum(probabilities * np.log2(probabilities))
 
 def gini_index(y: pd.Series) -> float:
@@ -65,20 +65,24 @@ def information_gain(y: pd.Series, left_y: pd.Series, right_y: pd.Series, criter
 def opt_split_attribute(X: pd.DataFrame, y: pd.Series, criterion):
     """
     Function to find the optimal attribute to split about.
+    Returns the index of the feature and the threshold value.
     """
     best_gain = -1
-    best_feature = None
+    best_feature_idx = None
     best_value = None
 
-    for feature in X.columns:
-        values = X[feature].unique()
+    # Iterate over feature indices instead of names
+    for feature_idx in range(X.shape[1]):
+        feature_name = X.columns[feature_idx]
+        values = X[feature_name].unique()
+        
         for value in values:
-            if pd.api.types.is_numeric_dtype(X[feature]):
-                left_mask = X[feature] <= value
-                right_mask = X[feature] > value
+            if pd.api.types.is_numeric_dtype(X[feature_name]):
+                left_mask = X[feature_name] <= value
+                right_mask = X[feature_name] > value
             else:
-                left_mask = X[feature] == value
-                right_mask = X[feature] != value
+                left_mask = X[feature_name] == value
+                right_mask = X[feature_name] != value
             
             left_y, right_y = y[left_mask], y[right_mask]
 
@@ -88,7 +92,7 @@ def opt_split_attribute(X: pd.DataFrame, y: pd.Series, criterion):
             gain = information_gain(y, left_y, right_y, criterion)
             if gain > best_gain:
                 best_gain = gain
-                best_feature = feature
+                best_feature_idx = feature_idx # Store index
                 best_value = value
                 
-    return best_feature, best_value
+    return best_feature_idx, best_value
