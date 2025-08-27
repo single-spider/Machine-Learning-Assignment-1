@@ -1,6 +1,7 @@
 from typing import Union
-import pandas as pd
 import numpy as np
+import pandas as pd
+
 
 
 def accuracy(y_hat: pd.Series, y: pd.Series) -> float:
