@@ -1,77 +1,93 @@
-"""
-You can add your own functions here according to your decision tree implementation.
-There is no restriction on following the below template, these fucntions are here to simply help you.
-"""
-
 import pandas as pd
+import numpy as np
 
-def one_hot_encoding(X: pd.DataFrame) -> pd.DataFrame:
-    """
-    Function to perform one hot encoding on the input data
-    """
-
-    pass
-
-def check_ifreal(y: pd.Series) -> bool:
+def check_if_real(y: pd.Series) -> bool:
     """
     Function to check if the given series has real or discrete values
     """
+    return y.dtype == 'float'
 
-    pass
-
-
-def entropy(Y: pd.Series) -> float:
+def entropy(y: pd.Series) -> float:
     """
     Function to calculate the entropy
     """
+    if y.size == 0:
+        return 0
+    counts = y.value_counts()
+    probabilities = counts / y.size
+    return -np.sum(probabilities * np.log2(probabilities))
 
-    pass
-
-
-def gini_index(Y: pd.Series) -> float:
+def gini_index(y: pd.Series) -> float:
     """
     Function to calculate the gini index
     """
+    if y.size == 0:
+        return 0
+    counts = y.value_counts()
+    probabilities = counts / y.size
+    return 1 - np.sum(probabilities**2)
 
-    pass
-
-
-def information_gain(Y: pd.Series, attr: pd.Series, criterion: str) -> float:
+def information_gain(y: pd.Series, left_y: pd.Series, right_y: pd.Series, criterion: str) -> float:
     """
-    Function to calculate the information gain using criterion (entropy, gini index or MSE)
+    Function to calculate the information gain
     """
+    if check_if_real(y):
+        # Use MSE for real-valued outputs
+        parent_mse = np.mean((y - y.mean())**2)
+        left_mse = np.mean((left_y - left_y.mean())**2) if not left_y.empty else 0
+        right_mse = np.mean((right_y - right_y.mean())**2) if not right_y.empty else 0
+        
+        n = len(y)
+        n_left = len(left_y)
+        n_right = len(right_y)
+        
+        weighted_mse = (n_left / n) * left_mse + (n_right / n) * right_mse
+        return parent_mse - weighted_mse
+    else:
+        # Use entropy or gini for discrete outputs
+        if criterion == 'information_gain':
+            impurity_func = entropy
+        else:
+            impurity_func = gini_index
+            
+        parent_impurity = impurity_func(y)
+        left_impurity = impurity_func(left_y)
+        right_impurity = impurity_func(right_y)
+        
+        n = len(y)
+        n_left = len(left_y)
+        n_right = len(right_y)
+        
+        weighted_impurity = (n_left / n) * left_impurity + (n_right / n) * right_impurity
+        return parent_impurity - weighted_impurity
 
-    pass
-
-
-def opt_split_attribute(X: pd.DataFrame, y: pd.Series, criterion, features: pd.Series):
+def opt_split_attribute(X: pd.DataFrame, y: pd.Series, criterion):
     """
     Function to find the optimal attribute to split about.
-    If needed you can split this function into 2, one for discrete and one for real valued features.
-    You can also change the parameters of this function according to your implementation.
-
-    features: pd.Series is a list of all the attributes we have to split upon
-
-    return: attribute to split upon
     """
+    best_gain = -1
+    best_feature = None
+    best_value = None
 
-    # According to wheather the features are real or discrete valued and the criterion, find the attribute from the features series with the maximum information gain (entropy or varinace based on the type of output) or minimum gini index (discrete output).
+    for feature in X.columns:
+        values = X[feature].unique()
+        for value in values:
+            if pd.api.types.is_numeric_dtype(X[feature]):
+                left_mask = X[feature] <= value
+                right_mask = X[feature] > value
+            else:
+                left_mask = X[feature] == value
+                right_mask = X[feature] != value
+            
+            left_y, right_y = y[left_mask], y[right_mask]
 
-    pass
+            if len(left_y) == 0 or len(right_y) == 0:
+                continue
 
-
-def split_data(X: pd.DataFrame, y: pd.Series, attribute, value):
-    """
-    Funtion to split the data according to an attribute.
-    If needed you can split this function into 2, one for discrete and one for real valued features.
-    You can also change the parameters of this function according to your implementation.
-
-    attribute: attribute/feature to split upon
-    value: value of that attribute to split upon
-
-    return: splitted data(Input and output)
-    """
-
-    # Split the data based on a particular value of a particular attribute. You may use masking as a tool to split the data.
-
-    pass
+            gain = information_gain(y, left_y, right_y, criterion)
+            if gain > best_gain:
+                best_gain = gain
+                best_feature = feature
+                best_value = value
+                
+    return best_feature, best_value
