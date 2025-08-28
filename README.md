@@ -2,7 +2,7 @@
 
 ## Total 14 marks 
 
-Check the Colab Notebook Here: [Colab NoteBook] (https://colab.research.google.com/drive/1tqvo07RNop80Teg9y2vYWa0n-Z98O8Tk?usp=sharing#scrollTo=Z9LevjjJqk2V)
+Results --> Check the Colab Notebook Here: [Colab NoteBook](https://colab.research.google.com/drive/1tqvo07RNop80Teg9y2vYWa0n-Z98O8Tk?usp=sharing#scrollTo=Z9LevjjJqk2V) Or View the Assignment_1_Notebook.ipynb to view the jupyter notebook. (the notebook doesn't renders properly in Github, so please download it and view in local jupyter instance)
 
 ## Decision Tree Implementation [6 marks]
 
