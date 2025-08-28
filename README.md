@@ -4,6 +4,8 @@
 
 Results --> Check the Colab Notebook Here: [Colab NoteBook](https://colab.research.google.com/drive/1tqvo07RNop80Teg9y2vYWa0n-Z98O8Tk?usp=sharing#scrollTo=Z9LevjjJqk2V) Or View the Assignment_1_Notebook.ipynb to view the jupyter notebook. (the notebook doesn't renders properly in Github, so please download it and view in local jupyter instance)
 
+Data collection in wild --> final_har_dataset.csv
+
 ## Decision Tree Implementation [6 marks]
 
 1. Complete the decision tree implementation in tree/base.py. The code should be written in Python and not use existing libraries other than the ones shared in class or already imported in the code. Your decision tree should work for four cases: i) discrete features, discrete output; ii) discrete features, real output; iii) real features, discrete output; real features, real output. <u>Your model should accept real inputs only (for discrete inputs, you may convert the attributes into one-hot encoded vectors)</u>. Your decision tree should be able to use InformationGain using Entropy or GiniIndex as the criteria for splitting for discrete output. Your decision tree should be able to use InformationGain using MSE as the criteria for splitting for real output. Your code should also be able to plot/display the decision tree.  **[2.5 marks]**
